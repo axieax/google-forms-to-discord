@@ -73,8 +73,10 @@ function submitPost(e) {
             'Content-Type': 'application/json',
         },
         'payload': JSON.stringify({
+            'username': 'Response Carrier',
+            'avatar_url': 'https://github.com/axieax/google-forms-to-discord/blob/main/assets/birb.jpg?raw=true',
             'embeds': [{
-                'title': e.source.getTitle() + ' has received a new response!',
+                'title': '✨ ' + e.source.getTitle() + ' has received a new response!',
                 'fields': payload,
                 'footer': {
                     'text': 'Google Forms to Discord Automation - www.github.com/axieax'
