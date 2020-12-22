@@ -1,2 +1,3 @@
 # Google Form responses to Discord automation
-Hi
+> 1. Create a Discord Webhook
+
