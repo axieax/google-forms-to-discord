@@ -1,4 +1,5 @@
 # Google Form responses to Discord automation
+![sample](assets/sample.png)
 
 ## Setting up a Google Form
 1. Open a new or existing Google Form in edit mode.

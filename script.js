@@ -44,7 +44,7 @@ function submitPost(e) {
                 rows = item.asCheckboxGridItem().getRows();
                 for (i = 0; i < resp.length; i++) {
                     // skip empty rows?
-                    response += rows[i] + ': ' + resp[i] + '\n';
+                    respFmt += rows[i] + ': ' + resp[i] + '\n';
                 }
                 resp = respFmt; // new lines
                 break;
