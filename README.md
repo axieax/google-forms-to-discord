@@ -1,2 +1,2 @@
-# google-forms-to-discord
-Automate Google Form responses to a Discord channel
+# Google Form responses to Discord automation
+Hi
