@@ -15,6 +15,7 @@ function submitPost(e) {
     responses.forEach(response => {
         let item = response.getItem();
         let resp = response.getResponse();
+        let respFmt;
         switch (item.getType()) {
             case FormApp.ItemType.CHECKBOX:
                 // Checkbox
