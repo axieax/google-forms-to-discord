@@ -15,6 +15,7 @@ function submitPost(e) {
     responses.forEach(response => {
         let item = response.getItem();
         let resp = response.getResponse();
+        let respFmt;
         switch (item.getType()) {
             case FormApp.ItemType.CHECKBOX:
                 // Checkbox
@@ -61,8 +62,6 @@ function submitPost(e) {
 
     });
 
-    // fields max length of 1000 characters
-    // 10 questions max (embed)
     // use regex in the future
     console.log(payload);
 
