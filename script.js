@@ -1,17 +1,66 @@
+///////////
+// SETUP //
+///////////
+
+// [TODO]: Paste your Discord Webhook URL in the quotation marks below
 const webhookURL = '';
+// [OPTIONAL]: If you want your responses to be hidden in the notification, change false to true below
+const hideResponses = false;
 
-/* Restrictions (https://discord.com/developers/docs/resources/channel#embed-limits) */
-// question name limited to 256 characters (will address in the future)
+// Setup instructions: https://github.com/axieax/google-forms-to-discord/
+
+
+/////////////////////////
+// DO NOT MODIFY BELOW //
+/////////////////////////
+
+// Discord embed limits
 const maxTextLength = 1024;
-// sum of all characters in an embed structure must not exceed 6000 characters (will address in the future)
-const maxFields = 25; // will address in the future
+const maxFields = 25;
 
+// Main Function
 function submitPost(e) {
     // retrieve and unpack data
     let responses = e.response.getItemResponses();
 
     // extract responses
-    payload = []
+    let payload = [];
+    extractResponses(payload, responses);
+    
+    // ignore empty responses
+    if (!payload.length) return;
+
+    // prepare POST request to webhook
+    let formTitle = e.source.getTitle();
+    if (!formTitle) formTitle = 'Untitled form';
+    let embed = {
+        'title': '✨ ' + formTitle + ' has received a new response!',
+        'footer': {
+            'text': 'Google Forms to Discord Automation - www.github.com/axieax',
+        },
+        'color': 16766720,
+    }
+    // include responses in payload unless specified otherwise
+    if (!hideResponses) embed.fields = payload;
+    
+    // create POST request to webhook
+    let options = {
+        'method': 'POST',
+        'headers': {
+            'Content-Type': 'application/json',
+        },
+        'payload': JSON.stringify({
+            'username': 'Response Carrier',
+            'avatar_url': 'https://github.com/axieax/google-forms-to-discord/blob/main/assets/birb.jpg?raw=true',
+            'embeds': [embed],
+        }),
+    };
+    UrlFetchApp.fetch(webhookURL, options);
+}
+
+
+// Extract Responses
+function extractResponses(payload, responses) {
     responses.forEach(response => {
         let item = response.getItem();
         let resp = response.getResponse();
@@ -53,35 +102,23 @@ function submitPost(e) {
                 // Short answer, paragraph, multiple choice, linear scale, date, time
                 break;
         }
-
+        
+        // ignore empty responses
         if (resp) payload.push({
             'name': item.getTitle(),
             'value': (resp.length <= maxTextLength) ? resp : resp.slice(0, maxTextLength - 3) + '...',
             'inline': false,
         });
-
     });
-
-    // use regex in the future
-    console.log(payload);
-
-    // create POST request to webhook
-    let options = {
-        'method': 'POST',
-        'headers': {
-            'Content-Type': 'application/json',
-        },
-        'payload': JSON.stringify({
-            'username': 'Response Carrier',
-            'avatar_url': 'https://github.com/axieax/google-forms-to-discord/blob/main/assets/birb.jpg?raw=true',
-            'embeds': [{
-                'title': '✨ ' + e.source.getTitle() + ' has received a new response!',
-                'fields': payload,
-                'footer': {
-                    'text': 'Google Forms to Discord Automation - www.github.com/axieax'
-                },
-            }],
-        }),
-    };
-    if (payload.length) UrlFetchApp.fetch(webhookURL, options);
 }
+
+
+/* Future Features:
+Embed Limits (https://discord.com/developers/docs/resources/channel#embed-limits)
+    - Embed Title (includes Form Title) - Maximum 256 characters
+    - Payload Fields (includes Payload Responses) - Maximum 25 responses can be displayed
+    - Field Name (includes Response Question) - Maximum 256 characters
+    - Total Characters (includes Embed Title, Field Names, Field Values, Footer Text) - Maximum 6000 characters
+        - https://developers.google.com/apps-script/reference/forms/form-response#toprefilledurl
+Regex?
+*/
