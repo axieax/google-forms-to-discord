@@ -23,3 +23,5 @@ Assumed: you have created a Discord account, joined a Discord server with the "M
 4. Provide permissions to the workflow as prompted.
 
 Congratulations, your automation is now set up!
+
+Note: if you cannot find the Edit menu in the script editor, make sure you are using the Legacy editor
