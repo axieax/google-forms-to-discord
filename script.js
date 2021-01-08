@@ -2,7 +2,7 @@
 // SETUP //
 ///////////
 
-// [TODO]: Paste your Discord Webhook URL in the quotation marks below
+// [TODO]: Paste your Discord Webhook URL in the quotation marks below (don't remove the quotation marks)
 const webhookURL = '';
 // [OPTIONAL]: If you want your responses to be hidden in the notification, change false to true below
 const hideResponses = false;
