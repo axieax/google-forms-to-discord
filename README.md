@@ -24,4 +24,4 @@ Assumed: you have created a Discord account, joined a Discord server with the "M
 
 Congratulations, your automation is now set up!
 
-Note: if you cannot find the Edit menu in the script editor, make sure you are using the Legacy editor
+Note: if you cannot find the Edit menu in the script editor, make sure you are using the Legacy editor.
