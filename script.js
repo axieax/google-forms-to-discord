@@ -70,7 +70,9 @@ const extractResponses = (responses) => {
         break;
       case FormApp.ItemType.FILE_UPLOAD:
         // File upload
-        resp = 'File(s) uploaded';
+        resp = 'File(s) uploaded:\n' + resp.map(
+          fileID => 'https://drive.google.com/open?id=' + fileID
+        ).join('\n');
         break;
       case FormApp.ItemType.GRID:
         // Multiple choice grid
@@ -116,7 +118,6 @@ Embed Limits (https://discord.com/developers/docs/resources/channel#embed-limits
   - Total Characters (includes Embed Title, Field Names, Field Values, Footer Text) - Maximum 6000 characters
       - https://developers.google.com/apps-script/reference/forms/form-response#toprefilledurl
 Regex?
-Links to files uploaded
 Date format
 Fix ellipsis
 */
