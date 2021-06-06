@@ -21,7 +21,7 @@ Assumed: you have created a Discord account, joined a Discord server with the "M
 
 ## Link the Google Form to the Discord Webhook
 
-1. In the script editor, paste the Webhook URL between the '' symbols on the Line 6. You can optionally choose to hide responses in your notification by changing **false** to **true** on Line 8.
+1. In the script editor, paste the Webhook URL between the '' symbols on the Line 6. You can optionally choose to hide responses in your notification by changing **false** to **true** on Line 13.
 2. Click Save.
 3. Navigate to Edit \> Current Project's Triggers and select Add Trigger.
 4. Change the event type to "On form submit" and click Save.

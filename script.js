@@ -1,47 +1,55 @@
-///////////
-// SETUP //
-///////////
+///////////////////////////////////////////////////////
+//           Google Form to Discord Webhook          //
+// https://github.com/axieax/google-forms-to-discord //
+///////////////////////////////////////////////////////
+
+/*
+  SETUP OPTIONS
+*/
 
 // [TODO]: Paste your Discord Webhook URL in the quotation marks below (don't remove the quotation marks)
 const webhookURL = '';
 // [OPTIONAL]: If you want your responses to be hidden in the notification, change false to true below
 const hideResponses = false;
+// [OPTIONAL]: If you want to show incomplete rows for grids and checkbox grids, change true to false below
+const hideEmptyRows = true;
+// Further setup instructions can be found at https://github.com/axieax/google-forms-to-discord/
 
-// Setup instructions: https://github.com/axieax/google-forms-to-discord/
 
-
-/////////////////////////
-// DO NOT MODIFY BELOW //
-/////////////////////////
+/*
+  DO NOT MODIFY BELOW
+*/
 
 // Discord embed limits
 const maxTextLength = 1024;
 const maxFields = 25;
 
-// Called Function
+// function called on form submit
 const submitPost = (e) => {
-  // retrieve and unpack data
-  const responses = e.response.getItemResponses();
-
-  // extract responses
-  const payload = extractResponses(responses);
-  // ignore empty responses
-  if (!payload.length) return;
-
   // prepare POST request to webhook
   const formTitle = e.source.getTitle() ?? 'Untitled Form';
   const embed = {
-    'title': '✨ ' + formTitle + ' has received a new response!',
+    'title': `✨ ${formTitle} has received a new response!`,
     'footer': {
       'text': 'Google Forms to Discord Automation - https://github.com/axieax',
     },
     'color': 16766720,
   }
-  // include responses in payload unless specified otherwise
-  if (!hideResponses) embed.fields = payload;
+  
+  // retrieve and unpack data
+  const responses = e.response.getItemResponses();
+  // format responses if responses are not to be hidden in the webhook
+  if (!hideResponses) {
+    // extract responses
+    const payload = extractResponses(responses);
+    // ignore empty responses
+    if (!payload.length) return;
+    // include responses in payload
+    embed.fields = payload;
+  }
 
   // create POST request to webhook
-  let options = {
+  const options = {
     'method': 'POST',
     'headers': {
       'Content-Type': 'application/json',
@@ -53,49 +61,52 @@ const submitPost = (e) => {
     }),
   };
   UrlFetchApp.fetch(webhookURL, options);
-}
+};
 
 
-// Extract Responses
+// extract responses
 const extractResponses = (responses) => {
-  let payload = [];
+  // format each response
+  const payload = [];
   responses.forEach(response => {
     const item = response.getItem();
     let resp = response.getResponse();
-    let respFmt;
+    let respFmt, questions;
     switch (item.getType()) {
       case FormApp.ItemType.CHECKBOX:
-        // Checkbox
+        // display checkbox responses on separate lines
         resp = resp.join('\n');
         break;
       case FormApp.ItemType.FILE_UPLOAD:
-        // File upload
+        // generate URL for uploaded files
         resp = 'File(s) uploaded:\n' + resp.map(
           fileID => 'https://drive.google.com/open?id=' + fileID
         ).join('\n');
         break;
       case FormApp.ItemType.GRID:
-        // Multiple choice grid
-        respFmt = [];
-        rows = item.asGridItem().getRows();
-        for (i = 0; i < resp.length; i++) {
-          // skip empty rows?
-          respFmt.push(rows[i] + ': ' + resp[i])
-        }
+        // display grid responses on separate lines
+        respFmt = []
+        questions = item.asGridItem().getRows();
+        resp.forEach((answer, index) => {
+          // exclude empty responses unless specified otherwise
+          if (!hideEmptyRows || answer !== null)
+            respFmt.push(`${questions[index]}: ${Array.isArray(answer) ? answer.join(', ') : answer}`);
+        });
         resp = respFmt.join('\n');
         break;
       case FormApp.ItemType.CHECKBOX_GRID:
-        // Tick box grid
-        respFmt = [];
-        rows = item.asCheckboxGridItem().getRows();
-        for (i = 0; i < resp.length; i++) {
-          // skip empty rows?
-          respFmt.push(rows[i] + ': ' + resp[i])
-        }
+        // display grid responses on separate lines
+        respFmt = []
+        questions = item.asCheckboxGridItem().getRows();
+        resp.forEach((answer, index) => {
+          // exclude empty responses unless specified otherwise
+          if (!hideEmptyRows || answer !== null)
+            respFmt.push(`${questions[index]}: ${Array.isArray(answer) ? answer.join(', ') : answer}`);
+        });
         resp = respFmt.join('\n');
         break;
       default:
-        // Short answer, paragraph, multiple choice, linear scale, date, time
+        // short answer, paragraph, multiple choice, linear scale, datetime
         break;
     }
 
@@ -106,8 +117,10 @@ const extractResponses = (responses) => {
       'inline': false,
     });
   });
+
+  // TODO: maxFields
   return payload;
-}
+};
 
 
 /* Future Features:
@@ -119,5 +132,5 @@ Embed Limits (https://discord.com/developers/docs/resources/channel#embed-limits
       - https://developers.google.com/apps-script/reference/forms/form-response#toprefilledurl
 Regex?
 Date format
-Fix ellipsis
+Extend ellipsis
 */
