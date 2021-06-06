@@ -133,4 +133,5 @@ Embed Limits (https://discord.com/developers/docs/resources/channel#embed-limits
 Regex?
 Date format
 Extend ellipsis
+Update instructions for non-legacy (new) script editor
 */
